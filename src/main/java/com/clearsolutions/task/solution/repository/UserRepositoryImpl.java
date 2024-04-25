@@ -1,7 +1,6 @@
 package com.clearsolutions.task.solution.repository;
 
 import com.clearsolutions.task.solution.model.UserDAO;
-import com.clearsolutions.task.solution.util.exception.ConflictException;
 import com.clearsolutions.task.solution.util.exception.NotFoundException;
 import org.springframework.stereotype.Repository;
 
@@ -24,17 +23,9 @@ public class UserRepositoryImpl implements UserRepository {
         userMap.put(user.getId(), user);
         return user;
     }
-    @Override
-    public void findByEmail(String email) {
-        for (UserDAO user : userMap.values()) {
-            if (user.getEmail().equals(email)) {
-                throw new ConflictException("User with this email " + email + " already exists");
-            }
-        }
-    }
 
     @Override
-    public UserDAO findExistingUser(String email) {
+    public UserDAO findByEmail(String email) {
         for (UserDAO user : userMap.values()) {
             if (user.getEmail().equals(email)) {
                 return user;

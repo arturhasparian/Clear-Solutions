@@ -1,10 +1,12 @@
 package com.clearsolutions.task.solution.service;
 
-import com.clearsolutions.task.solution.data.SignupRequest;
+import com.clearsolutions.task.solution.data.UserRequest;
 import com.clearsolutions.task.solution.model.UserDAO;
 import com.clearsolutions.task.solution.repository.UserRepository;
 import com.clearsolutions.task.solution.util.exception.BadRequestException;
+import com.clearsolutions.task.solution.util.exception.ConflictException;
 import com.clearsolutions.task.solution.util.exception.ForbiddenException;
+import com.clearsolutions.task.solution.util.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,9 +24,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDAO createUser(SignupRequest request) {
+    public UserDAO createUser(UserRequest request) {
         userBirthDay(request);
-        userRepository.findByEmail(request.getEmail());
+        checkByEmail(request.getEmail());
 
         UserDAO newUser = new UserDAO();
         newUser.setEmail(request.getEmail());
@@ -39,9 +41,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDAO updateUser(SignupRequest updatedUser) {
+    public UserDAO updateUser(UserRequest updatedUser) {
         String email = updatedUser.getEmail();
-        UserDAO currentUser = userRepository.findExistingUser(email);
+        UserDAO currentUser = userRepository.findByEmail(email);
         Optional.ofNullable(updatedUser.getFirstName())
                 .filter(firstName -> !firstName.isEmpty())
                 .ifPresent(currentUser::setFirstName);
@@ -61,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String email) {
-        userRepository.findExistingUser(email);
+        userRepository.findByEmail(email);
         userRepository.deleteUserByEmail(email);
     }
 
@@ -73,11 +75,19 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByBirthDateBetween(fromDate, toDate);
     }
 
-    private void userBirthDay(SignupRequest request) {
+    private void userBirthDay(UserRequest request) {
         LocalDate currentDate = LocalDate.now();
         LocalDate userBirthDay = request.getBirthDate();
         if (Period.between(userBirthDay, currentDate).getYears() < age) {
             throw new ForbiddenException("Access denied. User must be at least " + age + " years old.");
+        }
+    }
+
+    private void checkByEmail(String email) {
+        try {
+            userRepository.findByEmail(email);
+            throw new ConflictException("User with this email " + email + " already exists");
+        } catch (NotFoundException ignored) {
         }
     }
 }

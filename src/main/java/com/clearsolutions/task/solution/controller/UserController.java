@@ -1,9 +1,10 @@
 package com.clearsolutions.task.solution.controller;
 
-import com.clearsolutions.task.solution.data.SignupRequest;
+import com.clearsolutions.task.solution.data.UserRequest;
 import com.clearsolutions.task.solution.model.UserDAO;
 import com.clearsolutions.task.solution.service.UserService;
 import com.clearsolutions.task.solution.util.ResponseUtil;
+import com.clearsolutions.task.solution.util.UserUris;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -34,7 +35,7 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "409",description = "Conflict")
     })
-    public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest request) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequest request) {
 
         UserDAO user = userService.createUser(request);
         return ResponseUtil.generateResponse("User created successfully", HttpStatus.OK, user);
@@ -46,7 +47,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
-    public ResponseEntity<?> updateUser(@RequestBody SignupRequest request) {
+    public ResponseEntity<?> updateUser(@RequestBody UserRequest request) {
         UserDAO user = userService.updateUser(request);
         return ResponseUtil.generateResponse("User updated successfully", HttpStatus.OK, user);
     }

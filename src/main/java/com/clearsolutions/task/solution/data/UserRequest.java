@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class SignupRequest {
+public class UserRequest {
     @Email(regexp = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*"
             + "@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$",
     message = "Email is not valid")

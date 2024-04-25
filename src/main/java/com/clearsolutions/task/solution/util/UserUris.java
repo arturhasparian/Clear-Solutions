@@ -1,4 +1,4 @@
-package com.clearsolutions.task.solution.controller;
+package com.clearsolutions.task.solution.util;
 
 import lombok.experimental.UtilityClass;
 

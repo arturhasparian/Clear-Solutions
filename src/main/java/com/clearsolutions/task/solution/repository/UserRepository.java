@@ -8,9 +8,7 @@ import java.util.List;
 public interface UserRepository {
     UserDAO save(UserDAO user);
 
-    void findByEmail(String email);
-
-    UserDAO findExistingUser(String email);
+    UserDAO findByEmail(String email);
 
     void deleteUserByEmail(String email);
 
