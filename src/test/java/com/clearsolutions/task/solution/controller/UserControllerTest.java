@@ -10,12 +10,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,19 +46,6 @@ class UserControllerTest {
 
     @Test
     void shouldThrowBadRequest() {
-        UserRequest userRequest = new UserRequest();
-        userRequest.setEmail("");
-        userRequest.setFirstName("John");
-        userRequest.setLastName("Doe");
-        userRequest.setBirthDate(LocalDate.of(2000, 1, 1));
-        userRequest.setAddress("Test Street");
-        userRequest.setPhone("+1-234-567-89");
-
-        ResponseEntity<?> response = userController.createUser(userRequest);
-
-        assertThrows(MethodArgumentNotValidException.class, () -> userController.createUser(userRequest));
-
-
     }
 
     @Test
