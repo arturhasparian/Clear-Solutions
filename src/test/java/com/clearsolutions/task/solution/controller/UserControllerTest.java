@@ -11,8 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
-
+import static com.clearsolutions.task.solution.utils.TestUtils.getUserRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -26,16 +25,10 @@ class UserControllerTest {
     private UserController userController;
 
     @Test
-    void shouldCreateUser() {
-        UserRequest userRequest = new UserRequest();
-        userRequest.setEmail("test@example.com");
-        userRequest.setFirstName("John");
-        userRequest.setLastName("Doe");
-        userRequest.setBirthDate(LocalDate.of(2000, 1, 1));
-        userRequest.setAddress("Test Street");
-        userRequest.setPhone("+1-234-567-89");
-
-        when(userService.createUser(userRequest)).thenReturn(new UserDAO());
+    void createUser_Success() {
+        UserRequest userRequest = getUserRequest(2000);
+        when(userService.createUser(any())).thenReturn(UserDAO.builder()
+                .build());
 
         ResponseEntity<?> response = userController.createUser(userRequest);
 
@@ -45,7 +38,10 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldThrowBadRequest() {
+    void createUser_shouldThrowBadRequest() {
+        UserRequest userRequest = new UserRequest();
+        userRequest.setEmail("test@example.com");
+
     }
 
     @Test

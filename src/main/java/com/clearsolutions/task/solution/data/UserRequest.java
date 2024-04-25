@@ -11,7 +11,7 @@ public class UserRequest {
             + "@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$",
     message = "Email is not valid")
     private String email;
-    @NotEmpty()
+    @NotEmpty
     private String firstName;
     @NotEmpty
     private String lastName;

@@ -1,12 +1,12 @@
 package com.clearsolutions.task.solution.model;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 
 @Data
-@EqualsAndHashCode
+@Builder
 public class UserDAO {
     private Long id;
     private String email;

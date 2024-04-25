@@ -5,7 +5,6 @@ import com.clearsolutions.task.solution.model.UserDAO;
 import com.clearsolutions.task.solution.repository.UserRepository;
 import com.clearsolutions.task.solution.util.exception.BadRequestException;
 import com.clearsolutions.task.solution.util.exception.ConflictException;
-import com.clearsolutions.task.solution.util.exception.ForbiddenException;
 import com.clearsolutions.task.solution.util.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,16 +24,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDAO createUser(UserRequest request) {
-        userBirthDay(request);
+        checkUserBirthday(request);
         checkByEmail(request.getEmail());
 
-        UserDAO newUser = new UserDAO();
-        newUser.setEmail(request.getEmail());
-        newUser.setFirstName(request.getFirstName());
-        newUser.setLastName(request.getLastName());
-        newUser.setBirthDate(request.getBirthDate());
-        newUser.setAddress(request.getAddress());
-        newUser.setPhone(request.getPhone());
+        UserDAO newUser = UserDAO.builder()
+                .email(request.getEmail())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .birthDate(request.getBirthDate())
+                .address(request.getAddress())
+                .phone(request.getPhone())
+                .build();
 
         userRepository.save(newUser);
         return newUser;
@@ -75,11 +75,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByBirthDateBetween(fromDate, toDate);
     }
 
-    private void userBirthDay(UserRequest request) {
+    private void checkUserBirthday(UserRequest request) {
         LocalDate currentDate = LocalDate.now();
         LocalDate userBirthDay = request.getBirthDate();
         if (Period.between(userBirthDay, currentDate).getYears() < age) {
-            throw new ForbiddenException("Access denied. User must be at least " + age + " years old.");
+            throw new BadRequestException("Access denied. User must be at least " + age + " years old.");
         }
     }
 

@@ -18,6 +18,7 @@
         <java.version>17</java.version>
         <jakarta.version>3.0.0</jakarta.version>
         <springdoc.version>2.2.0</springdoc.version>
+        <commons-lang>3.14.0</commons-lang>
     </properties>
     <dependencies>
         <dependency>
@@ -27,6 +28,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

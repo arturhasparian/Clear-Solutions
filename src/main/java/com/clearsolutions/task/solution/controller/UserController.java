@@ -32,7 +32,6 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400",description = "Bad request"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "409",description = "Conflict")
     })
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRequest request) {
