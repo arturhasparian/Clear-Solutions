@@ -156,8 +156,7 @@ class UserServiceImplTest {
         userService = new UserServiceImpl(userRepository);
         LocalDate fromDate = LocalDate.of(2000, 1, 1);
 
-        assertThrows(BadRequestException.class, () -> {
-            userService.searchUsersByBirthDateRange(fromDate, fromDate.minusDays(1));
-        });
+        assertThrows(BadRequestException.class, () ->
+                userService.searchUsersByBirthDateRange(fromDate, fromDate.minusDays(1)));
     }
 }
