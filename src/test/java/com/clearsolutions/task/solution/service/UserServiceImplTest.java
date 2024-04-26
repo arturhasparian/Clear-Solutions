@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.clearsolutions.task.solution.utils.TestUtils.getUserRequest;
 import static org.junit.jupiter.api.Assertions.*;
@@ -118,6 +120,44 @@ class UserServiceImplTest {
 
     @Test
     void searchUsersByBirthDateRange() {
+        userService = new UserServiceImpl(userRepository);
+        LocalDate fromDate = LocalDate.of(1990, 1, 1);
+        LocalDate toDate = LocalDate.of(2000, 1, 1);
+        UserDAO user1 = UserDAO.builder()
+                .id(1L)
+                .email("test1@example.com")
+                .firstName("John")
+                .lastName("Doe")
+                .birthDate(LocalDate.of(1995, 5, 15))
+                .address("Test Street 1")
+                .phone("+1-234-567-89")
+                .build();
+        UserDAO user2 = UserDAO.builder()
+                .id(2L)
+                .email("test2@example.com")
+                .firstName("Jane")
+                .lastName("Doe")
+                .birthDate(LocalDate.of(1998, 8, 20))
+                .address("Test Street 2")
+                .phone("+1-234-567-90")
+                .build();
+        List<UserDAO> expectedUsers = Arrays.asList(user1, user2);
+        when(userRepository.findByBirthDateBetween(fromDate, toDate)).thenReturn(expectedUsers);
+
+        List<UserDAO> actualUsers = userService.searchUsersByBirthDateRange(fromDate, toDate);
+
+        assertNotNull(actualUsers);
+        assertEquals(expectedUsers.size(), actualUsers.size());
+        assertTrue(actualUsers.containsAll(expectedUsers));
     }
 
+    @Test
+    void searchUsersByBirthDateRange_ExceptionThrown() {
+        userService = new UserServiceImpl(userRepository);
+        LocalDate fromDate = LocalDate.of(2000, 1, 1);
+
+        assertThrows(BadRequestException.class, () -> {
+            userService.searchUsersByBirthDateRange(fromDate, fromDate.minusDays(1));
+        });
+    }
 }
