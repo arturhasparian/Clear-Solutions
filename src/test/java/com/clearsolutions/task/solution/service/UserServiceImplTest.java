@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import static com.clearsolutions.task.solution.utils.TestUtils.getUserRequest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,8 +49,39 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUser() {
+    void updateUser_Success() {
+        userService = new UserServiceImpl(userRepository);
+        UserRequest userRequest = getUserRequest(2000);
+        UserDAO existingUser = UserDAO.builder()
+                .id(1L)
+                .email("test@example.com")
+                .firstName("test")
+                .lastName("test")
+                .birthDate(LocalDate.of(2004, 10, 24))
+                .address("test")
+                .phone("+1-234-567")
+                .build();
+
+        when(userRepository.findByEmail(userRequest.getEmail())).thenReturn(existingUser);
+        when(userRepository.save(existingUser)).thenReturn(existingUser);
+
+        UserDAO updatedUser = userService.updateUser(userRequest);
+
+        assertNotNull(updatedUser);
+        assertEquals(userRequest.getEmail(), updatedUser.getEmail());
+        assertEquals(userRequest.getBirthDate(), updatedUser.getBirthDate());
+        assertEquals(userRequest.getAddress(),updatedUser.getAddress());
     }
+    @Test
+    void updateUser_ShouldThrowException() {
+        userService = new UserServiceImpl(userRepository);
+        UserRequest userRequest = getUserRequest(2000);
+
+        doThrow(new NotFoundException("User not found")).when(userRepository).findByEmail(userRequest.getEmail());
+
+        assertThrows(NotFoundException.class, () -> userService.updateUser(userRequest));
+    }
+
 
     @Test
     void deleteUser() {
