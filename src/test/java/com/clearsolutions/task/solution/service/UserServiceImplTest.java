@@ -16,8 +16,7 @@ import java.time.LocalDate;
 import static com.clearsolutions.task.solution.utils.TestUtils.getUserRequest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -70,8 +69,9 @@ class UserServiceImplTest {
         assertNotNull(updatedUser);
         assertEquals(userRequest.getEmail(), updatedUser.getEmail());
         assertEquals(userRequest.getBirthDate(), updatedUser.getBirthDate());
-        assertEquals(userRequest.getAddress(),updatedUser.getAddress());
+        assertEquals(userRequest.getAddress(), updatedUser.getAddress());
     }
+
     @Test
     void updateUser_ShouldThrowException() {
         userService = new UserServiceImpl(userRepository);
@@ -84,7 +84,36 @@ class UserServiceImplTest {
 
 
     @Test
-    void deleteUser() {
+    void deleteUser_Success() {
+        userService = new UserServiceImpl(userRepository);
+        String userEmail = "test@example.com";
+        UserDAO existingUser = UserDAO.builder()
+                .id(1L)
+                .email(userEmail)
+                .firstName("John")
+                .lastName("Doe")
+                .birthDate(LocalDate.of(2000, 1, 1))
+                .address("Test Street")
+                .phone("+1-234-567-89")
+                .build();
+
+        when(userRepository.findByEmail(userEmail)).thenReturn(existingUser);
+
+        userService.deleteUser(userEmail);
+
+        verify(userRepository, times(1)).findByEmail(userEmail);
+        verify(userRepository, times(1)).deleteUserByEmail(userEmail);
+    }
+
+    @Test
+    void deleteUser_ShouldThrowException() {
+        userService = new UserServiceImpl(userRepository);
+        String userEmail = "test@example.com";
+        UserRequest userRequest = getUserRequest(2000);
+
+        doThrow(new NotFoundException("User not found")).when(userRepository).findByEmail(userEmail);
+
+        assertThrows(NotFoundException.class, () -> userService.deleteUser(userRequest.getEmail()));
     }
 
     @Test
