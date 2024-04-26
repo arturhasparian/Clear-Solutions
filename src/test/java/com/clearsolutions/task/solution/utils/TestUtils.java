@@ -15,4 +15,15 @@ public class TestUtils {
         userRequest.setPhone("+1-234-567-89");
         return userRequest;
     }
+
+    public static UserRequest getChangedUserRequest(int year) {
+        UserRequest userRequest = new UserRequest();
+        userRequest.setEmail("test@example.com");
+        userRequest.setFirstName("Alan");
+        userRequest.setLastName("Poe");
+        userRequest.setBirthDate(LocalDate.of(year, 5, 5));
+        userRequest.setAddress("Test");
+        userRequest.setPhone("+1-234-567");
+        return userRequest;
+    }
 }
